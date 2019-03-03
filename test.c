@@ -5,7 +5,7 @@
 
 int main(){
 	
-	char* test = malloc(4);
+	char* test = (char*)malloc(4);
 	strcpy(test, "ok");
 
 	char* test2 = malloc(16);
@@ -20,6 +20,10 @@ int main(){
 //	printf("%c\n", test2[10]);
 		
 	printH();
+
+	
+	
+	free(test);
 
 /*
 	int a = 16;
