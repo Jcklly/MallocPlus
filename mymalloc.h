@@ -13,7 +13,7 @@
 
 
 #define GETS(h) ((h) & (~0x3))
-#define GETH(h) ((h) & (0x1))
+#define GETA(h) ((h) & (0x1))
 
 	// Declare static char array which will be representing our heap
 static char myblock[HSIZE];
@@ -30,5 +30,5 @@ void* mymalloc(size_t, char*, size_t);
 void* myfree(void*, char*, size_t);
 void init();
 void printH();
-
+int padding(int);
 

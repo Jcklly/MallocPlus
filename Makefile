@@ -1,5 +1,5 @@
 all: test.c mymalloc.o
-	gcc test.c mymalloc.o
+	gcc -g test.c mymalloc.o
 
 mymalloc.o: mymalloc.c
 	gcc -c mymalloc.c
