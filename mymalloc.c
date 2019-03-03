@@ -41,9 +41,13 @@ void* mymalloc(size_t s, char* file, size_t line) {
 			
 			rPtr = &myblock[i + 4];
 			((header*)ptr)->aSize = (reSize | 1);
-			newSize = sizeA - reSize;	
-			header* head = (header*)(&myblock[i + reSize + 4]);
-			head->aSize = ((newSize) | (0));
+			newSize = sizeA - reSize;
+			if( ((header*)&myblock[i + reSize + 4])->aSize <= 0  ) {
+	
+				header* head = (header*)(&myblock[i + reSize + 4]);
+				head->aSize = ((newSize) | (0));
+		
+			}
 			break;
 			
 		} else {

@@ -23,7 +23,7 @@ int main(){
 
 	
 	
-	free(test);
+//	free(test3);
 
 /*
 	int a = 16;
