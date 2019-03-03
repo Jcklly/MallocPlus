@@ -2,6 +2,18 @@
 #include <stdio.h>
 #include "mymalloc.h"
 
+/*	-- TO DO --
+ *	1.) find way to have malloc work without i < 500. Need a way to know if it reaches the end.
+ *	    Maybe add final footer to the end of the array?
+ *	2.) myfree(). Given a memory address, simply go there and if there is something allocated free it. If not then...
+ *	    After every free, coalesce.
+ *	3.) coalescing(). After every every free, go through and see if there are any free chucks next to eachother.
+ *	    If there are, then combine them into 1.  
+ *	4.) Memgrind(). Should be simple enough program to code.
+*/
+
+
+
 void* mymalloc(size_t s, char* file, size_t line) {
 	
 		// Checks if it's the first time malloc has been called.		
