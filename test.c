@@ -5,26 +5,29 @@
 
 int main(){
 	
-	init();
+//	char* test = malloc(4);
+//	strcpy(test, "ok");
 
-	char* test = malloc(4);
-	strcpy(test, "ok");
+//	char* test2 = malloc(16);
+//	strcpy(test2, "test test testy");
 
-
-	char* test2 = malloc(4);
-//	strcpy(test2, "lol");
-
-	
-	printH();
+//	char* test3 = malloc(4);
+//	strcpy(test3, "lol");
 
 
-	int a = 4;
+
+//	printf("%c\n", test2[10]);
+		
+//	printP();
+
+
+	int a = 16;
 	int b = 1;
 	int c = ((a) | (b));
 
-//	printf("c: %d\n", c);
-//	printf("alloc: %d\n", (c & 0x1));
-//	printf("size: %d\n", (c & (~0x3)));
+	printf("c: %d\n", c);
+	printf("alloc: %d\n", (c & 0x1));
+	printf("size: %d\n", (c & (~0x3)));
 
 	
 	return 0;

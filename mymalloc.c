@@ -4,10 +4,13 @@
 
 void* mymalloc(size_t s, char* file, size_t line) {
 	
-		// Checks if it's the first time malloc has been called.
-	if(myblock[4] == '\0') {
+		// Checks if it's the first time malloc has been called.		
+	
+
+	if(((header*)&myblock[0])->aSize <= 0) {
 		init();
 	}
+
 
 		// Base case if size given is 0.
 	if(s == 0){
@@ -22,7 +25,13 @@ void* mymalloc(size_t s, char* file, size_t line) {
 	int bit = 0;
 	int reSize = 0;
 	int newSize = 0;
-	int i = BLOCK;
+	int i = 0;
+
+
+//	ptr = &myblock[i];
+//	sizeT = ((header*)ptr)->aSize;
+//	printf("%d\n", sizeT);	
+
 
 	while(i < 500) {
 			// Takes the total size from header and breaks it down to allocate size and the bit.
@@ -33,15 +42,15 @@ void* mymalloc(size_t s, char* file, size_t line) {
 		bit = GETA(sizeT);
 		
 
+//		printf("%d\n", i);
+
 		if(s == 1 || s == 2 || s == 3) {
 			s = 4;
 		}	
 
-	
-		if((bit == 0) && (sizeA >= (int)s)) {
-			rPtr = &myblock[i + 1];
-			reSize =  padding((int)s);
-
+		reSize = padding((int)s);	
+		if((bit == 0) && (sizeA >= (int)reSize)) {
+			rPtr = &myblock[i + 4];
 
 
 //			printf("%d\n", ((header*)ptr)->aSize);
@@ -49,14 +58,21 @@ void* mymalloc(size_t s, char* file, size_t line) {
 			((header*)ptr)->aSize = (reSize | 1);
 
 //			printf("%d\n", ((header*)ptr)->aSize);
+//			printf("reSize: %d\n", reSize);
 
 			newSize = sizeA - reSize;	
-			header* head = (header*)(&myblock[reSize + 1]);
+			header* head = (header*)(&myblock[i + reSize + 4]);
 			head->aSize = ((newSize) | (0));
-			return rPtr;
+	
+			break;
 			
 		} else {
-			i += sizeA;
+//			printf("bit: %d\n", bit);
+//			printf("sizeA: %d\n", sizeA);
+//			printf("reSize: %d\n", reSize);
+		
+//			printf("else: \n");
+			i = 4 + sizeA;
 		}
 
 
@@ -69,7 +85,7 @@ void* mymalloc(size_t s, char* file, size_t line) {
 //	printf("%p\n", &((header*)ptr)->aSize);	
 
 
-	return NULL;
+	return rPtr;
 }
 
 
@@ -97,15 +113,15 @@ void* myfree(void* p, char* file, size_t line) {
 	// Initialize memory
 void init() {
 	
-
+/*
 	int i = 0;
 	while(i < 4088) {
 		myblock[i] = '0';
 		++i;
 	}
+*/
 
-
-	header* head = (header*)(&myblock[BLOCK]);
+	header* head = (header*)(&myblock[0]);
 	head->aSize = ((4092) | (0));
 
 
@@ -116,7 +132,19 @@ void init() {
 	
 }
 
+void printP() {
 
+	char* ptr = &myblock[0];
+	
+	int i = 0;
+
+//		printf("[ %d ]\n", GETS(((header*)ptr)->aSize));
+	for(i = 0; i < 50; i++) {				
+	ptr = &myblock[i];
+		printf("[ %d ]\n", GETS(((header*)ptr)->aSize));
+	}
+
+}
 
 
 void printH() {
