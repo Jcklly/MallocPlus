@@ -42,12 +42,12 @@ void* mymalloc(size_t s, char* file, size_t line) {
 		bit = GETA(sizeT);
 		
 
-//		printf("%d\n", i);
+		printf("%d\n", i);
 
 		if(s == 1 || s == 2 || s == 3) {
 			s = 4;
 		}	
-
+		
 		reSize = padding((int)s);	
 		if((bit == 0) && (sizeA >= (int)reSize)) {
 			rPtr = &myblock[i + 4];
@@ -72,7 +72,7 @@ void* mymalloc(size_t s, char* file, size_t line) {
 //			printf("reSize: %d\n", reSize);
 		
 //			printf("else: \n");
-			i = 4 + sizeA;
+			i = i + 4 + sizeA;
 		}
 
 
