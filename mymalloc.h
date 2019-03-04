@@ -27,8 +27,9 @@ typedef struct _HEADER {
 
 	// Function signatures for mymalloc and myfree
 void* mymalloc(size_t, char*, size_t);
-void* myfree(void*, char*, size_t);
+void myfree(void*, char*, size_t);
 void init();
 void printH();
 int padding(int);
 void printP();
+void coalesce(void*);
