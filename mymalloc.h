@@ -32,4 +32,4 @@ void init();
 void printH();
 int padding(int);
 void printP();
-void coalesce(void*);
+void coalesce(void*, int, int);

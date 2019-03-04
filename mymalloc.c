@@ -9,7 +9,7 @@
  * DONE	2.) myfree(). Given a memory address, simply go there and if there is something allocated free it. If not then...
  *	    After every free, coalesce.
  *
- * 	3.) coalescing(). After every every free, go through and see if there are any free chucks next to eachother.
+ * DONE 3.) coalescing(). After every every free, go through and see if there are any free chucks next to eachother.
  *	    If there are, then combine them into 1.  
  *
  * 	4.) Memgrind(). Should be simple enough program to code.
@@ -20,8 +20,6 @@
 void* mymalloc(size_t s, char* file, size_t line) {
 	
 		// Checks if it's the first time malloc has been called.		
-	
-
 	if(((header*)&myblock[0])->aSize <= 0) {
 		init();
 	}
@@ -61,12 +59,12 @@ void* mymalloc(size_t s, char* file, size_t line) {
 			// if space is enough and is not allocated, set current head size to size of allocated, and turn
 			// bit to 1. Then create a new header in front of newly allocated spot with updated info.
 		reSize = padding((int)s);	
-		if((bit == 0) && (sizeA >= (int)reSize)) {
+		if( (bit == 0) && (sizeA >= (int)reSize) ) {
 			
 			rPtr = &myblock[i + 4];
 			((header*)ptr)->aSize = (reSize | 1);
-			newSize = sizeA - reSize;
-			if( ((header*)&myblock[i + reSize + 4])->aSize <= 0  ) {
+			newSize = sizeA - reSize - 4;
+			if( (((header*)&myblock[i + reSize + 4])->aSize <= 0) ) {
 	
 				header* head = (header*)(&myblock[i + reSize + 4]);
 				head->aSize = ((newSize) | (0));
@@ -101,8 +99,8 @@ int padding(int a) {
 void myfree(void* p, char* file, size_t line) {
 
 	char* addr = NULL;
-	int i, check1, check2;
-	i = check1 = check2 = 0;
+	int i, check1;
+	i = check1 = 0;
 	
 		// Checks if pointer was even allocated by malloc. Test A.
 	addr = p - 4;
@@ -120,6 +118,7 @@ void myfree(void* p, char* file, size_t line) {
 	}
 
 
+		// Part of Test B.
 	if( (i >= 4092) || (check1 == 1)) {
 		printf("Unable to free.\nFile: %s\nLine: %d\n", file, line);
 	} else {
@@ -138,25 +137,71 @@ void myfree(void* p, char* file, size_t line) {
 			}
 			
 			((header*)addr)->aSize = ((blockSize) | (0));
-
+			coalesce(p, i, blockSize);
 		}
+	}
+}
+
+
+	// Given a pointer, it's position in array, and it's blocksize, will coalesce to save space.
+void coalesce(void* p, int position, int sFront) {
+	
+		// Declare Variables
+	char* ptr = p + sFront;
+	int i, bit, sizeA, block, currBlock, boolean;
+	i = bit = sizeA = block = boolean = 0; 
+	currBlock = sFront;
+
+	block = GETS(((header*)ptr)->aSize);
+	bit = GETA(((header*)ptr)->aSize);
+
+	
+		// End case, where block in front is end of myblock
+	if( block == 0 ) {
+		return;
+	}
+	
+
+		// Checks block IN FRONT of current block
+	if(bit == 0) {
+		currBlock = currBlock + block + 4;
+		((header*)ptr)->aSize = '\0';
+		ptr = p - 4;
+		((header*)ptr)->aSize = ( (currBlock) | (0) );
 	}
 
 
-//	printf("size: %d\n", GETS(((header*)addr)->aSize));
+		// Check block BEHIND current block		
+	int before = -1;
+	while(boolean == 0) {
+		ptr = &myblock[i];
+		currBlock = ((header*)ptr) -> aSize;
+		sizeA = GETS(currBlock);
+
+			// End of Array.
+		if( sizeA == 0 ) {
+			boolean = 1;
+			break;
+		}	
 	
-//	printf("free: %p\n", p);
+
+			// Size and bit of block before current block
+		block = GETS(((header*)&myblock[before])->aSize);
+		bit = GETA(((header*)&myblock[before])->aSize);
+		if( ((p-4) == ptr) && (bit == 0) && (before != -1) ) {
+
+			block = block + sizeA + 4;
+			((header*)&myblock[before])->aSize = ( (block) | (0) );
+			((header*)ptr)->aSize = '\0';
+			break;
+		}
+	
+		before = i;
+		i = i + 4 + sizeA;	
+	}
+
+
 }
-
-
-void coalsce(void* p) {
-
-
-
-}
-
-
-
 
 
 	// Initialize memory
@@ -175,7 +220,7 @@ void printP() {
 	char* ptr = &myblock[0];
 
 	int i = 0;
-	for(i = 0; i < 50; i++) {				
+	for(i = 0; i < 75; i++) {				
 	ptr = &myblock[i];
 		printf("[ %d ]\n", GETS(((header*)ptr)->aSize));
 	}

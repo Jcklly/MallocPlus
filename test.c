@@ -5,7 +5,7 @@
 
 int main(){
 
-/*	
+	
 	char* test = (char*)malloc(4);
 
 	if(test != NULL) {
@@ -14,9 +14,9 @@ int main(){
 		printf("test = NULL\n");
 	}
 
-	char* test2 = malloc(16);
+	char* test2 = malloc(8);
 	if(test2 != NULL) {
-		strcpy(test2, "test test testy");
+		strcpy(test2, "testing");
 	} else {
 		printf("test2 = NULL\n");
 	}
@@ -33,34 +33,34 @@ int main(){
 		strcpy(test4, "hm");
 	} else {
 		printf("test4 = NULL\n");
-	}
-*/		
+	}		
 
 
+	printH();
 
 
-//	printH();
-
-
-
-/*
-		// Testing Free
-	int x = 10;
+		// Testing free().
+	free(test3);
 	free(test2);
+	free(test);
+	
+//	char* a = malloc(4);
+//	strcpy(a, "noo");
+
+
+//	char* b = malloc(4);
+//	strcpy(b, "oka");	
+	
+//	free(b);
+
+//	char* b = malloc(16);
+//	strcpy(b, "yes yes yes yes");
+
 
 	printf("\n\n\n");
-
-	char* test5 = malloc(7);
-	if(test5 != NULL) {
-		strcpy(test5, "works!");
-	} else {
-		printf("test5 = NULL\n");
-	}
-	
 	printH();
-*/
 
-	
+
 
 
 
