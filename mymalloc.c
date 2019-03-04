@@ -12,11 +12,12 @@
  * DONE 3.) coalescing(). After every every free, go through and see if there are any free chucks next to eachother.
  *	    If there are, then combine them into 1.  
  *
- * 	4.) Memgrind(). Should be simple enough program to code.
+ * 	4.) Memgrind(). Gotta grind that mem. idk 
 */
 
 
 
+	// Implementation of malloc.
 void* mymalloc(size_t s, char* file, size_t line) {
 	
 		// Checks if it's the first time malloc has been called.		
@@ -81,7 +82,7 @@ void* mymalloc(size_t s, char* file, size_t line) {
 }
 
 
-
+	// Adds padding to input size so it is always divisible by 4.
 int padding(int a) {
 	int pad = 0;
 	int div = a;
@@ -96,6 +97,7 @@ int padding(int a) {
 }
 
 
+	// Implementation of free.
 void myfree(void* p, char* file, size_t line) {
 
 	char* addr = NULL;
@@ -215,6 +217,10 @@ void init() {
 	
 }
 
+
+
+
+	// helper functions that print the array. REMOVE BEFORE SUBMITTING.
 void printP() {
 
 	char* ptr = &myblock[0];
@@ -226,8 +232,6 @@ void printP() {
 	}
 
 }
-
-
 void printH() {
 
 	int i;
