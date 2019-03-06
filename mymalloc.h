@@ -9,10 +9,10 @@
 
 	// Declare the size of the heap
 #define HSIZE 4096
-#define BLOCK 4
+#define BLOCK 2
 
 
-#define GETS(h) ((h) & (~0x3))
+#define GETS(h) ((h) & (~0x1))
 #define GETA(h) ((h) & (0x1))
 
 	// Declare static char array which will be representing our heap
@@ -20,7 +20,7 @@ static char myblock[HSIZE];
 
 
 typedef struct _HEADER {
-	int aSize;
+	short aSize;
 }header;
 
 

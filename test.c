@@ -4,7 +4,6 @@
 #include <string.h>
 
 int main(){
-
 	
 	char* test = (char*)malloc(4);
 
@@ -14,7 +13,7 @@ int main(){
 		printf("test = NULL\n");
 	}
 
-	char* test2 = malloc(8);
+	char* test2 = malloc(14);
 	if(test2 != NULL) {
 		strcpy(test2, "testing");
 	} else {
@@ -36,14 +35,15 @@ int main(){
 	}		
 
 
-	printH();
+	printP();
 
 
 		// Testing free().
-	free(test3);
+//	free(test3);
 	free(test2);
 	free(test);
-	
+	free(test4);
+		
 //	char* a = malloc(4);
 //	strcpy(a, "noo");
 
@@ -58,21 +58,24 @@ int main(){
 
 
 	printf("\n\n\n");
-	printH();
-
-
-
+	printP();
 
 
 /*
-	int a = 0;
-	int b = 1;
+	int a = 4000;
+	int b = 0;
 	int c = ((a) | (b));
 
 	printf("c: %d\n", c);
 	printf("alloc: %d\n", (c & 0x1));
-	printf("size: %d\n", (c & (~0x3)));
+	printf("size: %d\n", (c & (~0x1)));
 */
+
+
+
+//	short n = 4088;
+//	printf("size_t: %d\n", sizeof(n));
+
 	
 	return 0;
 
