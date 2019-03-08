@@ -104,15 +104,15 @@ void myfree(void* p, char* file, size_t line) {
 	int i, check1;
 	i = check1 = 0;
 	
-		// Checks if pointer was even allocated by malloc. Test A.
+		// Checks if pointer was even allocated by malloc. Test B.
 	addr = p - METADATA;
-	if(((header*)addr)->aSize <= 0) { 
+	if( (((header*)addr)->aSize <= 0) || (((header*)addr)->aSize >= 4100) ) { 
 		check1 = 1;
 	} 
 
 
-		// Checks if address is even a valid pointer. Test B.
-	while(i < 4095) {
+		// Checks if address is even a valid pointer. Test A.
+	while(i < 4093) {
 		if(p == &myblock[i]) {
 			addr = &myblock[i-METADATA];
 			break;
@@ -134,11 +134,12 @@ void myfree(void* p, char* file, size_t line) {
 			printf("Redundant calls to free of the same pointer.\nFile: %s\nLine: %d\n", file, line);
 		} else {
 			int clear = 0;
-			while(clear < blockSize) {
+
+/*			while(clear < blockSize) {
 				myblock[i + clear] = '\0';
 				++clear;
 			}
-			
+*/			
 			((header*)addr)->aSize = ((blockSize) | (0));
 			coalesce(p, i, blockSize);
 		}
