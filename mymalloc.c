@@ -53,8 +53,8 @@ void* mymalloc(size_t s, char* file, size_t line) {
 			break;
 		}
 
-		if(s == 1 || s == 2 || s == 3) {
-			s = 4;
+		if(s == 1 || s == 2 ) {
+			s = 2;
 		}	
 		
 			// if space is enough and is not allocated, set current head size to size of allocated, and turn
