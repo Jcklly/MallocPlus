@@ -26,20 +26,8 @@ int main() {
 
 	while(i < 100) {
 		A[i] = testA();
-		++i;
-	}
-	i = 0;
-	while(i < 100) {
 		B[i] = testB();
-		++i;
-	}
-	i = 0;
-	while(i < 100) {
 		C[i] = testC();
-		++i;
-	}
-	i = 0;
-	while(i < 100) {
 		D[i] = testD();
 		++i;
 	}
@@ -149,7 +137,7 @@ double testC() {
     }
 
     for (i = 0; i < size; i++) {
-        myfree(p_array[i], "TEST_C_FREE", i);
+        free(p_array[i]);
     }
 
     gettimeofday(&stop, NULL);
@@ -220,11 +208,11 @@ void testE() { // Subtest for D; Able to allocate the max possible bytes in D ca
     void *arr_p[50];
 
     for (i = 0; i < 50; i++) {
-        arr_p[i] = mymalloc(64, "TEST_E_MALLOC", i);
+        arr_p[i] = malloc(64);
     }
 
     for (i = 0; i < 50; i++) {
-        myfree(arr_p[i], "TEST_E_FREE", i);
+        free(arr_p[i]);
     }
     
 }
