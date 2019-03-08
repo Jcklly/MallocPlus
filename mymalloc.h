@@ -9,7 +9,7 @@
 
 	// Declare the size of the heap
 #define HSIZE 4096
-#define BLOCK 2
+#define METADATA 2
 
 
 #define GETS(h) ((h) & (~0x1))

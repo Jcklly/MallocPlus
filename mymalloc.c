@@ -62,19 +62,19 @@ void* mymalloc(size_t s, char* file, size_t line) {
 		reSize = padding((int)s);	
 		if( (bit == 0) && (sizeA >= (int)reSize) ) {
 			
-			rPtr = &myblock[i + 2];
+			rPtr = &myblock[i + METADATA];
 			((header*)ptr)->aSize = (reSize | 1);
-			newSize = sizeA - reSize - 2;
-			if( (((header*)&myblock[i + reSize + 2])->aSize <= 0) ) {
+			newSize = sizeA - reSize - METADATA;
+			if( (((header*)&myblock[i + reSize + METADATA])->aSize <= 0) ) {
 	
-				header* head = (header*)(&myblock[i + reSize + 2]);
+				header* head = (header*)(&myblock[i + reSize + METADATA]);
 				head->aSize = ((newSize) | (0));
 		
 			}
 			break;
 			
 		} else {
-			i = i + 2 + sizeA;
+			i = i + METADATA + sizeA;
 		}
 	}
 
@@ -105,15 +105,16 @@ void myfree(void* p, char* file, size_t line) {
 	i = check1 = 0;
 	
 		// Checks if pointer was even allocated by malloc. Test A.
-	addr = p - 2;
+	addr = p - METADATA;
 	if(((header*)addr)->aSize <= 0) { 
 		check1 = 1;
 	} 
 
+
 		// Checks if address is even a valid pointer. Test B.
-	while(i < 4093) {
+	while(i < 4095) {
 		if(p == &myblock[i]) {
-			addr = &myblock[i-2];
+			addr = &myblock[i-METADATA];
 			break;
 		}	
 		++i;
@@ -166,9 +167,9 @@ void coalesce(void* p, int position, int sFront) {
 
 		// Checks block IN FRONT of current block
 	if(bit == 0) {
-		currBlock = currBlock + block + 2;
+		currBlock = currBlock + block + METADATA;
 		((header*)ptr)->aSize = '\0';
-		ptr = p - 2;
+		ptr = p - METADATA;
 		((header*)ptr)->aSize = ( (currBlock) | (0) );
 	}
 
@@ -190,16 +191,16 @@ void coalesce(void* p, int position, int sFront) {
 			// Size and bit of block before current block
 		block = GETS(((header*)&myblock[before])->aSize);
 		bit = GETA(((header*)&myblock[before])->aSize);
-		if( ((p-2) == ptr) && (bit == 0) && (before != -1) ) {
+		if( ((p-METADATA) == ptr) && (bit == 0) && (before != -1) ) {
 
-			block = block + sizeA + 2;
+			block = block + sizeA + METADATA;
 			((header*)&myblock[before])->aSize = ( (block) | (0) );
 			((header*)ptr)->aSize = '\0';
 			break;
 		}
 	
 		before = i;
-		i = i + 2 + sizeA;	
+		i = i + METADATA + sizeA;	
 	}
 
 
@@ -210,9 +211,9 @@ void coalesce(void* p, int position, int sFront) {
 void init() {
 
 	header* head = (header*)(&myblock[0]);
-	head->aSize = ((4094) | (0));
+	head->aSize = ((4092) | (0));
 	
-	header* foot = (header*)(&myblock[4094]);
+	header* foot = (header*)(&myblock[4092]);
 	foot->aSize = ((0) | (1));
 	
 }

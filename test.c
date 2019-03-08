@@ -2,9 +2,11 @@
 #include <stdio.h>
 #include "mymalloc.h"
 #include <string.h>
+#include <time.h>
+
 
 int main(){
-	
+/*	
 	char* test = (char*)malloc(4);
 
 	if(test != NULL) {
@@ -36,18 +38,23 @@ int main(){
 
 
 	printP();
-
+*/
 
 		// Testing free().
 //	free(test3);
-	free(test2);
-	free(test);
-	free(test4);
-		
-//	char* a = malloc(4);
-//	strcpy(a, "noo");
-
-
+//	free(test2);
+//	free(test);
+//	free(test4);
+/*		
+	printP();
+	printf("\n\n\n");
+	char* a = malloc(50);
+//	strcpy(a, "noooOOOO oooo");
+	free(a);
+	printP();
+	printf("\n\n\n");
+	a = malloc(50);	
+*/	
 //	char* b = malloc(4);
 //	strcpy(b, "oka");	
 	
@@ -57,24 +64,70 @@ int main(){
 //	strcpy(b, "yes yes yes yes");
 
 
-	printf("\n\n\n");
-	printP();
+//	char* a = malloc(1);
+//	free(a);
+//	a = malloc(1);
+//	strcpy(a, "ok");
+
+//	printf("\n\n\n");
+//	printP();
 
 
 /*
-	int a = 4000;
-	int b = 0;
+	int a = 4;
+	int b = 6 | 1;
 	int c = ((a) | (b));
 
 	printf("c: %d\n", c);
-	printf("alloc: %d\n", (c & 0x1));
-	printf("size: %d\n", (c & (~0x1)));
-*/
+	printf("alloc: %d\n", (a & ~0x1));
+	printf("size: %d\n", (b & (~0x1)));
+
 
 
 
 //	short n = 4088;
 //	printf("size_t: %d\n", sizeof(n));
+*/
+
+
+struct timeval tv, tz;
+
+double array[100];
+int i = 0;
+int j = 0;
+double time;
+char* test1;
+
+//for(i = 0; i < 100; i++) {
+while(i < 100) {
+	j = 0;
+	gettimeofday(&tv, NULL);
+//	for(j = 0; j < 150; j++) {
+	while(j < 150) {	
+		test1 = malloc(1);
+		free(test1);
+		++j;	
+	}
+	gettimeofday(&tz, NULL);
+	
+//	printf("Total: %f\n", (double) (tv2.tv_usec - tv1.tv_usec) / 1000000 + (double) (tv2.tv_sec - tv1.tv_sec) );
+	time = (double)(tz.tv_usec - tv.tv_usec) / 1000000 + (double)(tz.tv_sec - tv.tv_sec);
+	printf("Time[%d]: %f\n", i, time);
+	array[i] = time;	
+	++i;
+}
+
+double average = 0.0;
+i = 0;
+while(i < 100) {
+average = average + array[i];
+++i;
+}
+average = (double)average/100;
+
+printf("Average: %f\n", average*1000000);
+
+
 
 	
 	return 0;
