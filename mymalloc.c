@@ -27,7 +27,7 @@ void* mymalloc(size_t s, char* file, size_t line) {
 
 
 		// Base case if size given is 0.
-	if(s == 0){
+	if((int)s <= 0){
 		return NULL;
 	}
 
@@ -43,8 +43,8 @@ void* mymalloc(size_t s, char* file, size_t line) {
 		sizeT = ((header*)ptr) -> aSize;
 		sizeA = GETS(sizeT);
 		bit = GETA(sizeT);
-
-		
+	
+	
 			// Catches saturation of dynamic memory. Returns NULL. Test A for malloc.
 		if( sizeA == 0 ) {
 			printf("Saturation of dynamic memory.\nFile: %s\nLine: %d\n", file, line);
@@ -62,14 +62,21 @@ void* mymalloc(size_t s, char* file, size_t line) {
 		reSize = padding((int)s);	
 		if( (bit == 0) && (sizeA >= (int)reSize) ) {
 			
-			rPtr = &myblock[i + METADATA];
-			((header*)ptr)->aSize = (reSize | 1);
 			newSize = sizeA - reSize - METADATA;
+			if(newSize == 0) {
+				rPtr = &myblock[i + METADATA];
+				reSize = reSize + 2;
+				((header*)ptr)->aSize = (reSize | 1) ;
+			} else {
+				rPtr = &myblock[i + METADATA];
+				((header*)ptr)->aSize = (reSize | 1);
+			}
+
 			if( (((header*)&myblock[i + reSize + METADATA])->aSize <= 0) ) {
-	
+				
 				header* head = (header*)(&myblock[i + reSize + METADATA]);
 				head->aSize = ((newSize) | (0));
-		
+					
 			}
 			break;
 			
@@ -101,23 +108,29 @@ int padding(int a) {
 void myfree(void* p, char* file, size_t line) {
 
 	char* addr = NULL;
-	int i, check1;
-	i = check1 = 0;
-	
-		// Checks if pointer was even allocated by malloc. Test B.
-	addr = p - METADATA;
-	if( (((header*)addr)->aSize <= 0) || (((header*)addr)->aSize >= 4100) ) { 
-		check1 = 1;
-	} 
+	int i, check1, check2;
+	i = check1 = check2 = 0;
+
+
 
 
 		// Checks if address is even a valid pointer. Test A.
 	while(i < 4093) {
 		if(p == &myblock[i]) {
 			addr = &myblock[i-METADATA];
+			check2 = 1;
 			break;
 		}	
 		++i;
+	}
+
+
+		// Checks if pointer was even allocated by malloc. Test B.
+	addr = p - METADATA;
+	if(check2 == 1) {
+		if( (((header*)addr)->aSize <= 0) || (((header*)addr)->aSize >= 4100) ) { 
+			check1 = 1;
+		} 
 	}
 
 
@@ -135,11 +148,11 @@ void myfree(void* p, char* file, size_t line) {
 		} else {
 			int clear = 0;
 
-/*			while(clear < blockSize) {
+			while(clear < blockSize) {
 				myblock[i + clear] = '\0';
 				++clear;
 			}
-*/			
+			
 			((header*)addr)->aSize = ((blockSize) | (0));
 			coalesce(p, i, blockSize);
 		}
@@ -159,7 +172,7 @@ void coalesce(void* p, int position, int sFront) {
 	block = GETS(((header*)ptr)->aSize);
 	bit = GETA(((header*)ptr)->aSize);
 
-	
+		
 		// End case, where block in front is end of myblock
 	if( block == 0 ) {
 		return;
@@ -214,7 +227,7 @@ void init() {
 	header* head = (header*)(&myblock[0]);
 	head->aSize = ((4092) | (0));
 	
-	header* foot = (header*)(&myblock[4092]);
+	header* foot = (header*)(&myblock[4094]);
 	foot->aSize = ((0) | (1));
 	
 }
@@ -237,7 +250,7 @@ void printP() {
 void printH() {
 
 	int i;
-	for(i = 0; i < 50; i++) {
+	for(i = 0; i < 75; i++) {
 		printf("[ %c ]\n", myblock[i]);
 	}
 	

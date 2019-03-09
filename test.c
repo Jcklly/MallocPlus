@@ -6,7 +6,7 @@
 
 
 int main(){
-/*	
+	
 	char* test = (char*)malloc(4);
 
 	if(test != NULL) {
@@ -38,26 +38,23 @@ int main(){
 
 
 	printP();
-*/
+
 
 		// Testing free().
-//	free(test3);
-//	free(test2);
-//	free(test);
-//	free(test4);
-/*		
-	printP();
+	free(test);
+	free(test2);
+	free(test3);
+	free(test4);
+		
+	int * x;
+	free(x);
 	printf("\n\n\n");
-	char* a = malloc(50);
-//	strcpy(a, "noooOOOO oooo");
-	free(a);
+
 	printP();
-	printf("\n\n\n");
-	a = malloc(50);	
-*/	
+	
 //	char* b = malloc(4);
 //	strcpy(b, "oka");	
-	
+//	printP();	
 //	free(b);
 
 //	char* b = malloc(16);
@@ -89,7 +86,7 @@ int main(){
 //	printf("size_t: %d\n", sizeof(n));
 */
 
-
+/*
 struct timeval tv, tz;
 
 double array[100];
@@ -128,7 +125,7 @@ average = (double)average/100;
 printf("Average: %f\n", average*1000000);
 
 
-
+*/
 	
 	return 0;
 

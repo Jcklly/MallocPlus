@@ -2,12 +2,15 @@
 #include <stdio.h>
 #include <sys/time.h>
 #include "mymalloc.h"
+#include <string.h>
+
 
 double testA(); // Allocates 1 byte and immediately free - 150 times
 double testB(); // Allocates 1 byte 150 times, Every 50 byte chucnks, free 50 pointers 1 by 1
 double testC(); // Choose Between 1 byte or freeing a pointer, until allocated 50 times
 double testD(); // Choose between malloc or free, if malloc then Randomly choose a 1-64 byte size; Do this until malloc 50 times
-void testE();
+double testE();
+double testF();
 double average(double*);
 
 
@@ -18,8 +21,8 @@ int main() {
 	double B[100];
 	double C[100];
 	double D[100];
-//	double E[100];
-//	double F[100];
+	double E[100];
+	double F[100];
 
 
 	srand(time(NULL));
@@ -29,14 +32,20 @@ int main() {
 		B[i] = testB();
 		C[i] = testC();
 		D[i] = testD();
+		E[i] = testE();
+		F[i] = testF();
 		++i;
 	}
 
+
 		// Prints out mean runtime after 100 iterations of each test case
-	printf("A: %f Microseconds\n", average(A));
-	printf("B: %f Microseconds\n", average(B));
-	printf("C: %f Microseconds\n", average(C));
-	printf("D: %f Microseconds\n", average(D));
+	printf("Test A: %f Microseconds\n", average(A));
+	printf("Test B: %f Microseconds\n", average(B));
+	printf("Test C: %f Microseconds\n", average(C));
+	printf("Test D: %f Microseconds\n", average(D));
+	printf("Test E: %f Microseconds\n", average(E));
+	printf("Test F: %f Microseconds\n", average(F));
+
 
 	return 0;
 }
@@ -185,7 +194,6 @@ double testD() {
 					total_allocated_bytes = allocated_bytes[i-1] - total_allocated_bytes;
 				}
 				--i;
-//				--malloc_count;
 			}
 		}
 	}
@@ -203,16 +211,52 @@ double testD() {
 	return ms;
 }
 
-void testE() { // Subtest for D; Able to allocate the max possible bytes in D can but doesn't recieve saturation error?
-    int i;
-    void *arr_p[50];
 
-    for (i = 0; i < 50; i++) {
-        arr_p[i] = malloc(64);
-    }
+	// Malloc 60 64-byte chunks then free them all. This tests large mallocs and free.
+double testE() {
 
-    for (i = 0; i < 50; i++) {
-        free(arr_p[i]);
-    }
-    
+	void* p_array[100] = {NULL};
+	int i = 0;
+	
+	struct timeval start, stop;
+	gettimeofday(&start, NULL);
+	while(i < 60) {
+		p_array[i] = malloc(64);
+		++i;
+	
+	}
+	i = 0;
+	while(i < 60) {
+		free(p_array[i]);
+		++i;
+	}
+
+	gettimeofday(&stop, NULL);
+	double ms = (double)(stop.tv_sec - start.tv_sec) * 1000000 + (double)(stop.tv_usec - start.tv_usec) / 1000000;
+	return ms;
+}
+
+
+	// Malloc 1, 2, 3, ... 85 bytes, then free them all.
+double testF() {
+
+	void* p_array[100] = {NULL};
+	int i = 1;
+	
+	struct timeval start, stop;
+	gettimeofday(&start, NULL);
+	
+	while(i < 85) {
+		p_array[i] = malloc(i);
+		++i;
+	}
+	i = 1;
+	while(i < 85) {
+		free(p_array[i]);
+		++i;
+	}
+
+	gettimeofday(&stop, NULL);
+	double ms = (double)(stop.tv_sec - start.tv_sec) * 1000000 + (double)(stop.tv_usec - start.tv_usec) / 1000000;
+	return ms;
 }
