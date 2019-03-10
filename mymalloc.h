@@ -1,5 +1,5 @@
-
-#include <stdio.h>
+#ifndef MYMALLOC_H
+#define MYMALLOC_H
 
 
 	// Replaces all calls to malloc to mymalloc and free to myfree 
@@ -7,7 +7,7 @@
 #define free( x ) myfree(x, __FILE__, __LINE__)
 
 
-	// Declare the size of the heap
+	// Declare the size of the heap and metadata
 #define HSIZE 4096
 #define METADATA 2
 
@@ -19,6 +19,7 @@
 static char myblock[HSIZE];
 
 
+	// Struct which will serve for our metadata implementation
 typedef struct _HEADER {
 	short aSize;
 }header;
@@ -33,3 +34,5 @@ void printH();
 int padding(int);
 void printP();
 void coalesce(void*, int, int);
+
+#endif

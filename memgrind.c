@@ -44,8 +44,9 @@ int main() {
 	printf("Test C: %f Microseconds\n", average(C));
 	printf("Test D: %f Microseconds\n", average(D));
 	printf("Test E: %f Microseconds\n", average(E));
-	printf("Test F: %f Microseconds\n", average(F));
-
+	printf("THERE MAY OR MAY NOT BE SATURATION OF DYNAMIC MEMORY ERRORS FROM TEST F. THIS IS EXPECTED, DETAILS IN TESTPLAN.TXT.\n");
+	printf("Test F: %f Seconds\n", average(F)/(double)1000000);
+	
 
 	return 0;
 }
@@ -212,7 +213,7 @@ double testD() {
 }
 
 
-	// Malloc 60 64-byte chunks then free them all. This tests large mallocs and free.
+	// Malloc 62 64-byte chunks then free them all. This tests large mallocs and free.
 double testE() {
 
 	void* p_array[100] = {NULL};
@@ -220,24 +221,24 @@ double testE() {
 	
 	struct timeval start, stop;
 	gettimeofday(&start, NULL);
-	while(i < 60) {
+	while(i < 62) {
 		p_array[i] = malloc(64);
 		++i;
 	
 	}
 	i = 0;
-	while(i < 60) {
+	while(i < 62) {
 		free(p_array[i]);
+		p_array[i] = NULL;
 		++i;
 	}
-
 	gettimeofday(&stop, NULL);
 	double ms = (double)(stop.tv_sec - start.tv_sec) * 1000000 + (double)(stop.tv_usec - start.tv_usec) / 1000000;
 	return ms;
 }
 
 
-	// Malloc 1, 2, 3, ... 85 bytes, then free them all.
+	// A number of different tests.
 double testF() {
 
 	void* p_array[100] = {NULL};
@@ -246,15 +247,84 @@ double testF() {
 	struct timeval start, stop;
 	gettimeofday(&start, NULL);
 	
-	while(i < 85) {
+		// First test
+	while(i < 88) {
 		p_array[i] = malloc(i);
 		++i;
 	}
 	i = 1;
-	while(i < 85) {
+	while(i < 88) {
 		free(p_array[i]);
 		++i;
 	}
+	
+		// Then backwards
+	i = 87;	
+	while(i > 0) {
+		p_array[i] = malloc(i);
+		--i;
+	}
+	i = 87;
+	while(i > 0) {
+		free(p_array[i]);
+		--i;
+	}
+
+		// Mallocing max size then freeing it, 100 times.
+	i = 0;	
+	while(i < 100) {
+		p_array[i] = malloc(4092);
+		free(p_array[i]);
+		p_array[i] = NULL;
+		++i;
+	}
+
+		// Randomly choosing between a random size malloc (1 - 250) or a free until malloc'd 50 times.
+	int malloc_count, total_allocated_bytes, randomSize, isMalloc;
+	malloc_count = total_allocated_bytes = i = randomSize = isMalloc = 0;
+	int allocated_bytes[50]; // Used to track the amount of bytes allocated
+	char* m;
+
+	i = 0;
+	while(malloc_count < 50) {
+
+		isMalloc = rand() % 2;
+		randomSize = padding((rand() % 250));		
+		if( (isMalloc) && ((total_allocated_bytes + randomSize + 2) < 4092) ) {
+			m = malloc(randomSize);
+			if(m == NULL) {
+				continue;
+			} else {		
+				p_array[i] = m;
+				total_allocated_bytes = total_allocated_bytes + (randomSize + 2);
+				allocated_bytes[i] = total_allocated_bytes;
+				++i;
+				++malloc_count;
+			}
+		} else {
+			if(i == 0) {
+				continue;
+			} else { 
+				free(p_array[i-1]);
+				p_array[i-1] = NULL;
+				if(total_allocated_bytes >= allocated_bytes[i-1]) {
+					total_allocated_bytes = total_allocated_bytes - allocated_bytes[i-1];
+				} else {
+					total_allocated_bytes = allocated_bytes[i-1] - total_allocated_bytes;
+				}
+				--i;
+			}
+		}
+	}
+
+		// Free's any leftover pointers	
+	for(i = 0; i < 50; i++) {
+		if(p_array[i] == NULL) {
+			break;
+		}
+		free(p_array[i]);
+	}
+
 
 	gettimeofday(&stop, NULL);
 	double ms = (double)(stop.tv_sec - start.tv_sec) * 1000000 + (double)(stop.tv_usec - start.tv_usec) / 1000000;

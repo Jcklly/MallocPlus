@@ -2,30 +2,16 @@
 #include <stdio.h>
 #include "mymalloc.h"
 
-/*	-- TO DO --
- * DONE	1.) find way to have malloc work without i < 500. Need a way to know if it reaches the end.
- *	    Maybe add final footer to the end of the array?
- *
- * DONE	2.) myfree(). Given a memory address, simply go there and if there is something allocated free it. If not then...
- *	    After every free, coalesce.
- *
- * DONE 3.) coalescing(). After every every free, go through and see if there are any free chucks next to eachother.
- *	    If there are, then combine them into 1.  
- *
- * 	4.) Memgrind(). Gotta grind that mem. idk 
-*/
-
-
 
 	// Implementation of malloc.
 void* mymalloc(size_t s, char* file, size_t line) {
 	
 		// Checks if it's the first time malloc has been called.		
-	if(((header*)&myblock[0])->aSize <= 0) {
+	if( (((header*)&myblock[0])->aSize <= 0) || (((header*)&myblock[0])->aSize >= 4100) ) {
 		init();
 	}
 
-
+	
 		// Base case if size given is 0.
 	if((int)s <= 0){
 		return NULL;
@@ -47,7 +33,7 @@ void* mymalloc(size_t s, char* file, size_t line) {
 	
 			// Catches saturation of dynamic memory. Returns NULL. Test A for malloc.
 		if( sizeA == 0 ) {
-			printf("Saturation of dynamic memory.\nFile: %s\nLine: %d\n", file, line);
+			fprintf(stderr, "Saturation of dynamic memory.\nFile: %s\nLine: %d\n", file, line);
 			boolean = 1;
 			rPtr = NULL;
 			break;
@@ -112,10 +98,8 @@ void myfree(void* p, char* file, size_t line) {
 	i = check1 = check2 = 0;
 
 
-
-
 		// Checks if address is even a valid pointer. Test A.
-	while(i < 4093) {
+	while(i < 4096) {
 		if(p == &myblock[i]) {
 			addr = &myblock[i-METADATA];
 			check2 = 1;
@@ -135,8 +119,8 @@ void myfree(void* p, char* file, size_t line) {
 
 
 		// Part of Test B.
-	if( (i >= 4092) || (check1 == 1)) {
-		printf("Unable to free.\nFile: %s\nLine: %d\n", file, line);
+	if( (i >= 4095) || (check1 == 1)) {
+		fprintf(stderr, "Unable to free.\nFile: %s\nLine: %d\n", file, line);
 	} else {
 
 		int blockSize = GETS(((header*)addr)->aSize);
@@ -144,7 +128,7 @@ void myfree(void* p, char* file, size_t line) {
 			
 			// Checks if block is already freed. Redundant free. Test C.
 		if(bit == 0) {
-			printf("Redundant calls to free of the same pointer.\nFile: %s\nLine: %d\n", file, line);
+			fprintf(stderr, "Redundant calls to free of the same pointer.\nFile: %s\nLine: %d\n", file, line);
 		} else {
 			int clear = 0;
 
@@ -172,15 +156,10 @@ void coalesce(void* p, int position, int sFront) {
 	block = GETS(((header*)ptr)->aSize);
 	bit = GETA(((header*)ptr)->aSize);
 
-		
-		// End case, where block in front is end of myblock
-	if( block == 0 ) {
-		return;
-	}
-	
+
 
 		// Checks block IN FRONT of current block
-	if(bit == 0) {
+	if((bit == 0) && (block != 0) ) {
 		currBlock = currBlock + block + METADATA;
 		((header*)ptr)->aSize = '\0';
 		ptr = p - METADATA;
@@ -241,7 +220,7 @@ void printP() {
 	char* ptr = &myblock[0];
 
 	int i = 0;
-	for(i = 0; i < 75; i++) {				
+	for(i = 0; i < 50; i++) {				
 	ptr = &myblock[i];
 		printf("[ %d ]\n", GETS(((header*)ptr)->aSize));
 	}
@@ -250,7 +229,7 @@ void printP() {
 void printH() {
 
 	int i;
-	for(i = 0; i < 75; i++) {
+	for(i = 0; i < 50; i++) {
 		printf("[ %c ]\n", myblock[i]);
 	}
 	

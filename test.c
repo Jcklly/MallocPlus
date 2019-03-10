@@ -7,12 +7,12 @@
 
 int main(){
 	
-	char* test = (char*)malloc(4);
+	char* test1 = (char*)malloc(4);
 
-	if(test != NULL) {
-		strcpy(test, "ok");
+	if(test1 != NULL) {
+		strcpy(test1, "ok");
 	} else {	
-		printf("test = NULL\n");
+		printf("test1 = NULL\n");
 	}
 
 	char* test2 = malloc(14);
@@ -37,19 +37,19 @@ int main(){
 	}		
 
 
-	printP();
+//	printP();
 
 
 		// Testing free().
-	free(test);
+	free(test1);
 	free(test2);
-	free(test3);
+	free(test3);	
 	free(test4);
-		
-	int * x;
-	free(x);
-	printf("\n\n\n");
 
+//	int x;
+//	free((int*)x);
+
+//	printf("\n\n\n");
 	printP();
 	
 //	char* b = malloc(4);
